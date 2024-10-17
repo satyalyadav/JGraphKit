@@ -80,7 +80,7 @@ public class GraphManager {
         Graphviz.fromGraph(graph).render(Format.DOT).toFile(outputFile);
     }
 
-    // Feature 4: Output the graph to a graphics file
+    // Feature 4: Output the graph to graphics file
     public void outputGraphics(String path, String format) throws IOException {
         File outputFile = new File(path);
         Format graphFormat = Format.PNG; // Default to PNG
