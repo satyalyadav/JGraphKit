@@ -58,11 +58,7 @@ mvn test
 
 ## GitHub Commits
 
-- Feature 1 (Parse Graph): [Link to commit]
-- Feature 2 (Add Nodes): [Link to commit]
-- Feature 3 (Add Edges): [Link to commit]
-- Feature 4 (Output Graph): [Link to commit]
-
-## Screenshots
-
-[Include screenshots of the expected output for each feature here]
+- Feature 1 (Parse Graph): https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/6864b69c6fa51dcfd7ef4598b6bc5cac67fdde6d
+- Feature 2 (Add Nodes): https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/c75c667bb9b83adebc6025f6f72e8a6fe96753ff
+- Feature 3 (Add Edges): https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/86ce05d49ef704968baabd443a605c1d84879ed1
+- Feature 4 (Output Graph): https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/29c02e67cb34e89810a41d813f69a65061f42bab
