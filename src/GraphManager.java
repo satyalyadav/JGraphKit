@@ -46,6 +46,20 @@ public class GraphManager {
         Graphviz.fromGraph(graph).render(Format.DOT).toFile(outputFile);
     }
 
+    // Feature 2: Add a single node
+    public boolean addNode(String label) {
+        if (graph.nodes().stream().noneMatch(n -> n.name().value().equals(label))) {
+            graph.add(getMutableNode(label));
+            return true;
+        }
+        return false;
+    }
+
+    // Feature 2: Add multiple nodes
+    public void addNodes(String[] labels) {
+        Arrays.stream(labels).forEach(this::addNode);
+    }
+
     private MutableNode getMutableNode(String label) {
         return graph.nodes().stream()
                 .filter(n -> n.name().value().equals(label))
