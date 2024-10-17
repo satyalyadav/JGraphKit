@@ -60,7 +60,7 @@ public class GraphManager {
         Arrays.stream(labels).forEach(this::addNode);
     }
 
-    // Feature 3: Add an edge
+    // Feature 3: Add edge
     public boolean addEdge(String srcLabel, String dstLabel) {
         MutableNode src = getMutableNode(srcLabel);
         MutableNode dst = getMutableNode(dstLabel);
