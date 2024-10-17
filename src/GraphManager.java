@@ -60,7 +60,7 @@ public class GraphManager {
         Arrays.stream(labels).forEach(this::addNode);
     }
 
-    // Feature 3: Add edge
+    // Feature 3: Add an edge
     public boolean addEdge(String srcLabel, String dstLabel) {
         MutableNode src = getMutableNode(srcLabel);
         MutableNode dst = getMutableNode(dstLabel);
@@ -72,6 +72,26 @@ public class GraphManager {
             return true;
         }
         return false;
+    }
+
+    // Feature 4: Output the graph to a DOT file
+    public void outputDOTGraph(String path) throws IOException {
+        File outputFile = new File(path);
+        Graphviz.fromGraph(graph).render(Format.DOT).toFile(outputFile);
+    }
+
+    // Feature 4: Output the graph to a graphics file
+    public void outputGraphics(String path, String format) throws IOException {
+        File outputFile = new File(path);
+        Format graphFormat = Format.PNG; // Default to PNG
+
+        if (format.equalsIgnoreCase("png")) {
+            graphFormat = Format.PNG;
+        } else {
+            throw new IllegalArgumentException("Unsupported format. Only PNG is supported.");
+        }
+
+        Graphviz.fromGraph(graph).render(graphFormat).toFile(outputFile);
     }
 
     private MutableNode getMutableNode(String label) {
