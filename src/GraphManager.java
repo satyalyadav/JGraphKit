@@ -60,6 +60,20 @@ public class GraphManager {
         Arrays.stream(labels).forEach(this::addNode);
     }
 
+    // Feature 3: Add an edge
+    public boolean addEdge(String srcLabel, String dstLabel) {
+        MutableNode src = getMutableNode(srcLabel);
+        MutableNode dst = getMutableNode(dstLabel);
+
+        if (!graph.edges().stream().anyMatch(e ->
+                e.from().name().value().equals(srcLabel) &&
+                        e.to().name().value().equals(dstLabel))) {
+            graph.add(src.addLink(dst));
+            return true;
+        }
+        return false;
+    }
+
     private MutableNode getMutableNode(String label) {
         return graph.nodes().stream()
                 .filter(n -> n.name().value().equals(label))
