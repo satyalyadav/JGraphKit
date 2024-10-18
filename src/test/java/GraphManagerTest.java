@@ -35,22 +35,46 @@ public class GraphManagerTest {
 
     @Test
     void testAddNode() {
-        assertTrue(graphManager.addNode("NewNode"));
-        assertFalse(graphManager.addNode("NewNode")); // Duplicate node
+        System.out.println("Testing add node...");
+        assertTrue(graphManager.addNode("NewNode"), "Should add new node");
+        System.out.println("Added node: NewNode");
+        assertFalse(graphManager.addNode("NewNode"), "Should not add duplicate node");
+        System.out.println("Attempted to add duplicate node: NewNode (failed as expected)");
+        assertEquals(1, graphManager.getNodeCount(), "Should have 1 node");
+        System.out.println("Final node count: " + graphManager.getNodeCount());
     }
 
     @Test
     void testAddNodes() {
+        System.out.println("Testing add multiple nodes...");
         graphManager.addNodes(new String[]{"Node1", "Node2", "Node3"});
-        assertEquals(3, graphManager.getNodeCount());
+        assertEquals(3, graphManager.getNodeCount(), "Should have 3 nodes");
+        System.out.println("Added nodes: Node1, Node2, Node3");
+        System.out.println("Final node count: " + graphManager.getNodeCount());
     }
 
     @Test
     void testAddEdge() {
+        System.out.println("Testing add edge...");
         graphManager.addNode("A");
         graphManager.addNode("B");
-        assertTrue(graphManager.addEdge("A", "B"));
-        assertFalse(graphManager.addEdge("A", "B")); // Duplicate edge
+        assertTrue(graphManager.addEdge("A", "B"), "Should add new edge");
+        System.out.println("Added edge: A -> B");
+        assertFalse(graphManager.addEdge("A", "B"), "Should not add duplicate edge");
+        System.out.println("Attempted to add duplicate edge: A -> B (failed as expected)");
+        assertEquals(1, graphManager.getEdgeCount(), "Should have 1 edge");
+        System.out.println("Final edge count: " + graphManager.getEdgeCount());
+    }
+
+    @Test
+    void testAddEdgeWithNonExistentNodes() {
+        System.out.println("Testing add edge with non-existent nodes...");
+        assertTrue(graphManager.addEdge("C", "D"), "Should add edge and create nodes");
+        System.out.println("Added edge: C -> D (nodes created automatically)");
+        assertEquals(2, graphManager.getNodeCount(), "Should have 2 nodes");
+        assertEquals(1, graphManager.getEdgeCount(), "Should have 1 edge");
+        System.out.println("Final node count: " + graphManager.getNodeCount());
+        System.out.println("Final edge count: " + graphManager.getEdgeCount());
     }
 
     @Test
@@ -70,16 +94,9 @@ public class GraphManagerTest {
         assertTrue(content.contains("B"), "Should contain 'B'");
         assertTrue(content.contains("->"), "Should contain '->'");
 
-        // Use a more flexible regular expression to check for "A" -> "B"
         String regex = ".*\"A\"\\s*->\\s*\"B\".*";
         assertTrue(content.replaceAll("\\s+", " ").matches(regex),
                 "Should contain 'A -> B' (allowing for whitespace and newlines)");
-
-        // Print debug information if the assertion fails
-        if (!content.replaceAll("\\s+", " ").matches(regex)) {
-            System.out.println("Regex: " + regex);
-            System.out.println("Content (whitespace normalized): " + content.replaceAll("\\s+", " "));
-        }
     }
 
     @Test
@@ -91,9 +108,20 @@ public class GraphManagerTest {
         Path outputFile = tempDir.resolve("output.png");
         graphManager.outputGraphics(outputFile.toString(), "png");
 
-        assertTrue(Files.exists(outputFile));
-        assertTrue(Files.size(outputFile) > 0);
+        assertTrue(Files.exists(outputFile), "PNG file should exist");
+        assertTrue(Files.size(outputFile) > 0, "PNG file should not be empty");
+
+        // Check if the file is actually a PNG
+        byte[] pngHeader = Files.readAllBytes(outputFile);
+        assertTrue(pngHeader.length >= 8 && pngHeader[0] == (byte)0x89 && pngHeader[1] == 0x50 && pngHeader[2] == 0x4E && pngHeader[3] == 0x47,
+                "File should have PNG header");
+
+        System.out.println("PNG file created successfully: " + outputFile);
+
+        // Test unsupported format
+        Path invalidFile = tempDir.resolve("output.jpg");
+        assertThrows(IllegalArgumentException.class, () -> {
+            graphManager.outputGraphics(invalidFile.toString(), "jpg");
+        }, "Should throw IllegalArgumentException for unsupported format");
     }
-
-
 }

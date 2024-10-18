@@ -124,16 +124,13 @@ public class GraphManager {
 
     // Feature 4: Output the graph to a graphics file
     public void outputGraphics(String path, String format) throws IOException {
-        File outputFile = new File(path);
-        Format graphFormat = Format.PNG; // Default to PNG
-
-        if (format.equalsIgnoreCase("png")) {
-            graphFormat = Format.PNG;
-        } else {
+        if (!format.equalsIgnoreCase("png")) {
             throw new IllegalArgumentException("Unsupported format. Only PNG is supported.");
         }
 
-        Graphviz.fromGraph(graph).render(graphFormat).toFile(outputFile);
+        File outputFile = new File(path);
+        Graphviz.fromGraph(graph).render(Format.PNG).toFile(outputFile);
+        System.out.println("Graphics output saved to: " + path + " in PNG format");
     }
 
     private MutableNode getOrCreateNode(String label) {
