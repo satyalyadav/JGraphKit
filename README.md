@@ -101,10 +101,10 @@ digraph {
 Successfully output graph to output.dot
 Graphics output saved to: output.png in PNG format
 Graphics output saved to: output.png
-
-PNG:
-![Output Graph](image.png)
 ```
+#### Output PNG:
+![Output Graph](image.png)
+
 
 ## Running Tests
 
