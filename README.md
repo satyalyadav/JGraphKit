@@ -20,12 +20,41 @@ java -cp target/CSE464-2023-syadav42-1.0-SNAPSHOT.jar Main
 
 ## Features and Usage
 
+### Example input
+```
+input.dot:
+
+digraph G {
+  A -> B;
+  B -> C;
+  C -> A;
+}
+```
+
 ### 1. Parse a DOT graph file
 
 ```java
 GraphManager manager = new GraphManager();
 manager.parseGraph("path/to/your/input.dot");
 System.out.println(manager.toString());
+```
+
+#### Output:
+```
+Parsing input.dot file...
+Parsing file: input.dot
+Parsed graph: digraph "G" {
+"A" -> "B"
+"B" -> "C"
+"C" -> "A"
+}
+Successfully parsed input.dot
+
+Initial Graph Information:
+Number of nodes: 3
+Node labels: [A, C, B]
+Number of edges: 3
+Edges: [C -> A, B -> C, A -> B]
 ```
 
 ### 2. Add nodes
@@ -35,17 +64,46 @@ manager.addNode("NewNode");
 manager.addNodes(new String[]{"Node1", "Node2", "Node3"});
 ```
 
+#### Output:
+```
+Adding nodes and edges...
+Added node 'NewNode': true
+Added nodes: Node1, Node2
+```
+
 ### 3. Add edges
 
 ```java
 manager.addEdge("Node1", "Node2");
 ```
 
+#### Output:
+```
+Added edge 'Node1' -> 'Node2': true
+```
 ### 4. Output to DOT file and PNG
 
 ```java
 manager.outputDOTGraph("path/to/output.dot");
 manager.outputGraphics("path/to/output.png", "png");
+```
+
+#### Output:
+```
+Outputting to DOT and PNG...
+DOT output:
+digraph {
+  "Node1" -> "Node2"
+  "A" -> "B"
+  "C" -> "A"
+  "B" -> "C"
+}
+Successfully output graph to output.dot
+Graphics output saved to: output.png in PNG format
+Graphics output saved to: output.png
+
+PNG:
+![Output Graph](image.png)
 ```
 
 ## Running Tests
