@@ -8,6 +8,13 @@ import guru.nidi.graphviz.parse.Parser;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static guru.nidi.graphviz.model.Factory.mutGraph;
@@ -262,5 +269,76 @@ public class GraphManager {
                     g.add(newNode);
                     return newNode;
                 });
+    }
+
+    // Feature: BFS Graph Search
+    public GraphPath GraphSearch(String srcLabel, String dstLabel) {
+        // Verify both nodes exist
+        MutableNode src = graph.nodes().stream()
+                .filter(n -> n.name().toString().equals(srcLabel))
+                .findFirst()
+                .orElse(null);
+
+        MutableNode dst = graph.nodes().stream()
+                .filter(n -> n.name().toString().equals(dstLabel))
+                .findFirst()
+                .orElse(null);
+
+        if (src == null || dst == null) {
+            throw new IllegalArgumentException("Source or destination node does not exist");
+        }
+
+        // BFS implementation
+        Queue<MutableNode> queue = new LinkedList<>();
+        Map<String, String> parentMap = new HashMap<>();
+        Set<String> visited = new HashSet<>();
+        
+        queue.offer(src);
+        visited.add(srcLabel);
+        
+        while (!queue.isEmpty()) {
+            MutableNode current = queue.poll();
+            String currentLabel = current.name().toString();
+            
+            // If we've reached the destination
+            if (currentLabel.equals(dstLabel)) {
+                // Construct the path
+                GraphPath path = new GraphPath();
+                String node = dstLabel;
+                while (node != null) {
+                    path.addNode(node);
+                    node = parentMap.get(node);
+                }
+                
+                // Reverse the path (since we built it backwards)
+                GraphPath finalPath = new GraphPath();
+                List<String> nodes = path.getNodes();
+                for (int i = nodes.size() - 1; i >= 0; i--) {
+                    finalPath.addNode(nodes.get(i));
+                }
+                return finalPath;
+            }
+            
+            // Add unvisited neighbors to queue
+            for (Link link : current.links()) {
+                String neighborLabel = link.to().name().toString();
+                if (!visited.contains(neighborLabel)) {
+                    // Find the actual MutableNode for the neighbor
+                    MutableNode neighbor = graph.nodes().stream()
+                            .filter(n -> n.name().toString().equals(neighborLabel))
+                            .findFirst()
+                            .orElse(null);
+                    
+                    if (neighbor != null) {
+                        queue.offer(neighbor);
+                        visited.add(neighborLabel);
+                        parentMap.put(neighborLabel, currentLabel);
+                    }
+                }
+            }
+        }
+        
+        // No path found
+        return null;
     }
 }

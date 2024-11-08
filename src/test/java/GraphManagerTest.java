@@ -182,4 +182,50 @@ public class GraphManagerTest {
         
         System.out.println("Edge removal exception tests completed successfully");
     }
+
+    @Test
+    void testGraphSearchBFS() {
+        // Create a simple graph
+        graphManager.addNode("A");
+        graphManager.addNode("B");
+        graphManager.addNode("C");
+        graphManager.addNode("D");
+        graphManager.addEdge("A", "B");
+        graphManager.addEdge("B", "C");
+        graphManager.addEdge("C", "D");
+        graphManager.addEdge("A", "D"); // Direct path from A to D
+
+        // Test direct path
+        GraphPath path1 = graphManager.GraphSearch("A", "D");
+        assertNotNull(path1, "Should find a path from A to D");
+        assertEquals("A -> D", path1.toString(), "Should find direct path from A to D");
+
+        // Test longer path
+        GraphPath path2 = graphManager.GraphSearch("A", "C");
+        assertNotNull(path2, "Should find a path from A to C");
+        assertEquals("A -> B -> C", path2.toString(), "Should find path through B");
+
+        // Test no path exists
+        graphManager.addNode("E"); // Isolated node
+        GraphPath path3 = graphManager.GraphSearch("A", "E");
+        assertNull(path3, "Should return null when no path exists");
+
+        // Test path to self
+        GraphPath path4 = graphManager.GraphSearch("A", "A");
+        assertNotNull(path4, "Should find a path from A to A");
+        assertEquals("A", path4.toString(), "Path to self should only contain the node itself");
+    }
+
+    @Test
+    void testGraphSearchInvalidNodes() {
+        graphManager.addNode("A");
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            graphManager.GraphSearch("A", "NonExistent");
+        }, "Should throw exception for non-existent destination");
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            graphManager.GraphSearch("NonExistent", "A");
+        }, "Should throw exception for non-existent source");
+    }
 }
