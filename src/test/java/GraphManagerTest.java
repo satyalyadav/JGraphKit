@@ -185,69 +185,56 @@ public class GraphManagerTest {
     }
 
     @Test
-<<<<<<< HEAD
     void testGraphSearchBFS() {
-        // Create a simple graph
-=======
-    void testGraphSearchDFS() {
-        // Create a graph with multiple possible paths
->>>>>>> dfs
-        graphManager.addNode("A");
-        graphManager.addNode("B");
-        graphManager.addNode("C");
-        graphManager.addNode("D");
-        graphManager.addEdge("A", "B");
-        graphManager.addEdge("B", "C");
-        graphManager.addEdge("C", "D");
-        graphManager.addEdge("A", "D"); // Direct path from A to D
-
-<<<<<<< HEAD
-        // Test direct path
-        GraphPath path1 = graphManager.GraphSearch("A", "D");
+        setupTestGraph();
+        
+        // Test direct path with BFS
+        GraphPath path1 = graphManager.GraphSearch("A", "D", Algorithm.BFS);
         assertNotNull(path1, "Should find a path from A to D");
-        assertEquals("A -> D", path1.toString(), "Should find direct path from A to D");
+        assertEquals("A -> D", path1.toString(), "BFS should find direct path from A to D");
 
         // Test longer path
-        GraphPath path2 = graphManager.GraphSearch("A", "C");
+        GraphPath path2 = graphManager.GraphSearch("A", "C", Algorithm.BFS);
         assertNotNull(path2, "Should find a path from A to C");
-        assertEquals("A -> B -> C", path2.toString(), "Should find path through B");
+        assertEquals("A -> B -> C", path2.toString(), "BFS should find shortest path through B");
 
         // Test no path exists
         graphManager.addNode("E"); // Isolated node
-        GraphPath path3 = graphManager.GraphSearch("A", "E");
+        GraphPath path3 = graphManager.GraphSearch("A", "E", Algorithm.BFS);
         assertNull(path3, "Should return null when no path exists");
 
         // Test path to self
-        GraphPath path4 = graphManager.GraphSearch("A", "A");
+        GraphPath path4 = graphManager.GraphSearch("A", "A", Algorithm.BFS);
         assertNotNull(path4, "Should find a path from A to A");
         assertEquals("A", path4.toString(), "Path to self should only contain the node itself");
     }
 
     @Test
-    void testGraphSearchInvalidNodes() {
-=======
-        // Test finding a path
-        GraphPath path1 = graphManager.GraphSearch("A", "D");
+    void testGraphSearchDFS() {
+        setupTestGraph();
+        
+        // Test finding a path with DFS
+        GraphPath path1 = graphManager.GraphSearch("A", "D", Algorithm.DFS);
         assertNotNull(path1, "Should find a path from A to D");
         assertTrue(
             path1.toString().equals("A -> D") || // Direct path
             path1.toString().equals("A -> B -> C -> D"), // Longer path through B and C
-            "Should find a valid path from A to D"
+            "DFS should find a valid path from A to D"
         );
 
         // Test path to self
-        GraphPath path2 = graphManager.GraphSearch("A", "A");
+        GraphPath path2 = graphManager.GraphSearch("A", "A", Algorithm.DFS);
         assertNotNull(path2, "Should find a path from A to A");
         assertEquals("A", path2.toString(), "Path to self should only contain the node itself");
 
         // Test with no path available
         graphManager.addNode("E"); // Isolated node
-        GraphPath path3 = graphManager.GraphSearch("A", "E");
+        GraphPath path3 = graphManager.GraphSearch("A", "E", Algorithm.DFS);
         assertNull(path3, "Should return null when no path exists");
     }
 
     @Test
-    void testGraphSearchDFSCyclic() {
+    void testGraphSearchCyclic() {
         // Create a cyclic graph
         graphManager.addNode("A");
         graphManager.addNode("B");
@@ -256,25 +243,46 @@ public class GraphManagerTest {
         graphManager.addEdge("B", "C");
         graphManager.addEdge("C", "A");
 
-        // Test that DFS can handle cycles
-        GraphPath path = graphManager.GraphSearch("A", "C");
-        assertNotNull(path, "Should find a path in cyclic graph");
-        List<String> nodes = path.getNodes();
-        assertTrue(nodes.get(0).equals("A") && nodes.get(nodes.size() - 1).equals("C"),
-                "Path should start at source and end at destination");
+        // Test both algorithms can handle cycles
+        GraphPath bfsPath = graphManager.GraphSearch("A", "C", Algorithm.BFS);
+        assertNotNull(bfsPath, "BFS should find a path in cyclic graph");
+        assertTrue(bfsPath.getNodes().get(0).equals("A") && 
+                  bfsPath.getNodes().get(bfsPath.getNodes().size() - 1).equals("C"),
+                "BFS path should start at source and end at destination");
+
+        GraphPath dfsPath = graphManager.GraphSearch("A", "C", Algorithm.DFS);
+        assertNotNull(dfsPath, "DFS should find a path in cyclic graph");
+        assertTrue(dfsPath.getNodes().get(0).equals("A") && 
+                  dfsPath.getNodes().get(dfsPath.getNodes().size() - 1).equals("C"),
+                "DFS path should start at source and end at destination");
     }
 
     @Test
-    void testGraphSearchDFSInvalidNodes() {
->>>>>>> dfs
+    void testGraphSearchInvalidInputs() {
         graphManager.addNode("A");
         
         assertThrows(IllegalArgumentException.class, () -> {
-            graphManager.GraphSearch("A", "NonExistent");
-        }, "Should throw exception for non-existent destination");
+            graphManager.GraphSearch("A", "NonExistent", Algorithm.BFS);
+        }, "Should throw exception for non-existent destination with BFS");
         
         assertThrows(IllegalArgumentException.class, () -> {
-            graphManager.GraphSearch("NonExistent", "A");
-        }, "Should throw exception for non-existent source");
+            graphManager.GraphSearch("NonExistent", "A", Algorithm.DFS);
+        }, "Should throw exception for non-existent source with DFS");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            graphManager.GraphSearch("A", "A", null);
+        }, "Should throw exception for null algorithm");
+    }
+
+    // Helper method to setup test graph
+    private void setupTestGraph() {
+        graphManager.addNode("A");
+        graphManager.addNode("B");
+        graphManager.addNode("C");
+        graphManager.addNode("D");
+        graphManager.addEdge("A", "B");
+        graphManager.addEdge("B", "C");
+        graphManager.addEdge("C", "D");
+        graphManager.addEdge("A", "D"); // Direct path from A to D
     }
 }
