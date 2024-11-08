@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 public class GraphManagerTest {
     private GraphManager graphManager;
@@ -184,8 +185,13 @@ public class GraphManagerTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testGraphSearchBFS() {
         // Create a simple graph
+=======
+    void testGraphSearchDFS() {
+        // Create a graph with multiple possible paths
+>>>>>>> dfs
         graphManager.addNode("A");
         graphManager.addNode("B");
         graphManager.addNode("C");
@@ -195,6 +201,7 @@ public class GraphManagerTest {
         graphManager.addEdge("C", "D");
         graphManager.addEdge("A", "D"); // Direct path from A to D
 
+<<<<<<< HEAD
         // Test direct path
         GraphPath path1 = graphManager.GraphSearch("A", "D");
         assertNotNull(path1, "Should find a path from A to D");
@@ -218,6 +225,48 @@ public class GraphManagerTest {
 
     @Test
     void testGraphSearchInvalidNodes() {
+=======
+        // Test finding a path
+        GraphPath path1 = graphManager.GraphSearch("A", "D");
+        assertNotNull(path1, "Should find a path from A to D");
+        assertTrue(
+            path1.toString().equals("A -> D") || // Direct path
+            path1.toString().equals("A -> B -> C -> D"), // Longer path through B and C
+            "Should find a valid path from A to D"
+        );
+
+        // Test path to self
+        GraphPath path2 = graphManager.GraphSearch("A", "A");
+        assertNotNull(path2, "Should find a path from A to A");
+        assertEquals("A", path2.toString(), "Path to self should only contain the node itself");
+
+        // Test with no path available
+        graphManager.addNode("E"); // Isolated node
+        GraphPath path3 = graphManager.GraphSearch("A", "E");
+        assertNull(path3, "Should return null when no path exists");
+    }
+
+    @Test
+    void testGraphSearchDFSCyclic() {
+        // Create a cyclic graph
+        graphManager.addNode("A");
+        graphManager.addNode("B");
+        graphManager.addNode("C");
+        graphManager.addEdge("A", "B");
+        graphManager.addEdge("B", "C");
+        graphManager.addEdge("C", "A");
+
+        // Test that DFS can handle cycles
+        GraphPath path = graphManager.GraphSearch("A", "C");
+        assertNotNull(path, "Should find a path in cyclic graph");
+        List<String> nodes = path.getNodes();
+        assertTrue(nodes.get(0).equals("A") && nodes.get(nodes.size() - 1).equals("C"),
+                "Path should start at source and end at destination");
+    }
+
+    @Test
+    void testGraphSearchDFSInvalidNodes() {
+>>>>>>> dfs
         graphManager.addNode("A");
         
         assertThrows(IllegalArgumentException.class, () -> {
