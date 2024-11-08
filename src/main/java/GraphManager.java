@@ -272,6 +272,10 @@ public class GraphManager {
     }
 
     public GraphPath GraphSearch(String srcLabel, String dstLabel, Algorithm algo) {
+        if (algo == null) {
+            throw new IllegalArgumentException("Algorithm cannot be null");
+        }
+
         // Verify both nodes exist
         MutableNode src = graph.nodes().stream()
                 .filter(n -> n.name().toString().equals(srcLabel))
