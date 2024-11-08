@@ -1,4 +1,3 @@
-import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Link;
@@ -9,8 +8,6 @@ import guru.nidi.graphviz.parse.Parser;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static guru.nidi.graphviz.model.Factory.mutGraph;
