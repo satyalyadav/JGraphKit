@@ -124,4 +124,62 @@ public class GraphManagerTest {
             graphManager.outputGraphics(invalidFile.toString(), "jpg");
         }, "Should throw IllegalArgumentException for unsupported format");
     }
+
+    @Test
+    void testRemoveNode() {
+        System.out.println("Testing remove node...");
+        graphManager.addNode("A");
+        graphManager.addNode("B");
+        graphManager.addEdge("A", "B");
+        
+        assertTrue(graphManager.removeNode("A"), "Should remove existing node");
+        assertEquals(1, graphManager.getNodeCount(), "Should have 1 node remaining");
+        assertFalse(graphManager.removeNode("A"), "Should return false for non-existent node");
+        
+        System.out.println("Node removal test completed successfully");
+    }
+
+    @Test
+    void testRemoveNodes() {
+        System.out.println("Testing remove multiple nodes...");
+        graphManager.addNodes(new String[]{"A", "B", "C"});
+        graphManager.addEdge("A", "B");
+        graphManager.addEdge("B", "C");
+        
+        graphManager.removeNodes(new String[]{"A", "B"});
+        assertEquals(1, graphManager.getNodeCount(), "Should have 1 node remaining");
+        assertEquals(0, graphManager.getEdgeCount(), "Should have no edges remaining");
+        
+        System.out.println("Multiple nodes removal test completed successfully");
+    }
+
+    @Test
+    void testRemoveEdge() {
+        System.out.println("Testing remove edge...");
+        graphManager.addNode("A");
+        graphManager.addNode("B");
+        graphManager.addEdge("A", "B");
+        
+        assertTrue(graphManager.removeEdge("A", "B"), "Should remove existing edge");
+        assertEquals(0, graphManager.getEdgeCount(), "Should have no edges remaining");
+        assertEquals(2, graphManager.getNodeCount(), "Should still have both nodes");
+        
+        System.out.println("Edge removal test completed successfully");
+    }
+
+    @Test
+    void testRemoveEdgeExceptions() {
+        System.out.println("Testing remove edge exceptions...");
+        graphManager.addNode("A");
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            graphManager.removeEdge("A", "NonExistent");
+        }, "Should throw exception for non-existent destination node");
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            graphManager.removeEdge("NonExistent", "A");
+        }, "Should throw exception for non-existent source node");
+        
+        System.out.println("Edge removal exception tests completed successfully");
+    }
 }

@@ -140,4 +140,127 @@ public class GraphManager {
                     return newNode;
                 });
     }
+
+    // Feature: Remove a single node
+    public boolean removeNode(String label) {
+        // Create a new graph
+        MutableGraph newGraph = mutGraph("graph").setDirected(true);
+        boolean nodeFound = false;
+        
+        // Copy all nodes except the one to be removed
+        for (MutableNode node : graph.nodes()) {
+            if (!node.name().toString().equals(label)) {
+                MutableNode newNode = mutNode(node.name().toString());
+                newGraph.add(newNode);
+            } else {
+                nodeFound = true;
+            }
+        }
+        
+        // Copy all edges except those connected to the removed node
+        for (MutableNode node : graph.nodes()) {
+            String nodeName = node.name().toString();
+            if (!nodeName.equals(label)) {
+                for (Link link : node.links()) {
+                    String targetName = link.to().name().toString();
+                    if (!targetName.equals(label)) {
+                        getOrCreateNode(newGraph, nodeName)
+                            .addLink(getOrCreateNode(newGraph, targetName));
+                    }
+                }
+            }
+        }
+        
+        this.graph = newGraph;
+        return nodeFound;
+    }
+
+    // Feature: Remove multiple nodes
+    public void removeNodes(String[] labels) {
+        // Create a new graph
+        MutableGraph newGraph = mutGraph("graph").setDirected(true);
+        
+        // Copy all nodes except those to be removed
+        for (MutableNode node : graph.nodes()) {
+            String nodeName = node.name().toString();
+            boolean shouldKeep = true;
+            for (String label : labels) {
+                if (nodeName.equals(label)) {
+                    shouldKeep = false;
+                    break;
+                }
+            }
+            if (shouldKeep) {
+                newGraph.add(mutNode(nodeName));
+            }
+        }
+        
+        // Copy all edges except those connected to removed nodes
+        for (MutableNode node : graph.nodes()) {
+            String nodeName = node.name().toString();
+            boolean srcShouldKeep = true;
+            for (String label : labels) {
+                if (nodeName.equals(label)) {
+                    srcShouldKeep = false;
+                    break;
+                }
+            }
+            
+            if (srcShouldKeep) {
+                for (Link link : node.links()) {
+                    String targetName = link.to().name().toString();
+                    boolean dstShouldKeep = true;
+                    for (String label : labels) {
+                        if (targetName.equals(label)) {
+                            dstShouldKeep = false;
+                            break;
+                        }
+                    }
+                    
+                    if (dstShouldKeep) {
+                        getOrCreateNode(newGraph, nodeName)
+                            .addLink(getOrCreateNode(newGraph, targetName));
+                    }
+                }
+            }
+        }
+        
+        this.graph = newGraph;
+    }
+
+    // Feature: Remove an edge
+    public boolean removeEdge(String srcLabel, String dstLabel) {
+        MutableNode src = graph.nodes().stream()
+                .filter(n -> n.name().toString().equals(srcLabel))
+                .findFirst()
+                .orElse(null);
+
+        if (src == null) {
+            throw new IllegalArgumentException("Source node does not exist: " + srcLabel);
+        }
+
+        MutableNode dst = graph.nodes().stream()
+                .filter(n -> n.name().toString().equals(dstLabel))
+                .findFirst()
+                .orElse(null);
+
+        if (dst == null) {
+            throw new IllegalArgumentException("Destination node does not exist: " + dstLabel);
+        }
+
+        return src.links().removeIf(link -> 
+            link.to().name().toString().equals(dstLabel));
+    }
+
+    // Helper method for node creation in new graph
+    private MutableNode getOrCreateNode(MutableGraph g, String label) {
+        return g.nodes().stream()
+                .filter(n -> n.name().toString().equals(label))
+                .findFirst()
+                .orElseGet(() -> {
+                    MutableNode newNode = mutNode(label);
+                    g.add(newNode);
+                    return newNode;
+                });
+    }
 }
