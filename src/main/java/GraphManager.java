@@ -106,17 +106,8 @@ public class GraphManager {
     // Feature 4: Output the graph to a DOT file
     public boolean outputDOTGraph(String path) {
         try {
-            File outputFile = new File(path);
-            StringBuilder dotFormat = new StringBuilder("digraph {\n");
-            for (MutableNode node : graph.nodes()) {
-                for (Link link : node.links()) {
-                    dotFormat.append(String.format("  \"%s\" -> \"%s\"\n", node.name().toString(), link.to().name().toString()));
-                }
-            }
-            dotFormat.append("}\n");
-
-            String dotContent = dotFormat.toString();
-            Files.writeString(outputFile.toPath(), dotContent);
+            String dotContent = GraphFileHandler.generateDOTFormat(graph);
+            GraphFileHandler.writeToFile(dotContent, path);
             System.out.println("DOT output:\n" + dotContent);
             return true;
         } catch (IOException e) {
