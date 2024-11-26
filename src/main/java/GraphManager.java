@@ -224,7 +224,7 @@ public class GraphManager {
                 });
     }
 
-    public GraphPath GraphSearch(String srcLabel, String dstLabel, Algorithm algo) {
+    public GraphPath searchPath(String srcLabel, String dstLabel, Algorithm algo) {
         GraphPathFinder pathFinder = new GraphPathFinder(graph);
         return pathFinder.findPath(srcLabel, dstLabel, algo);
     }
