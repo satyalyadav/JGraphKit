@@ -131,56 +131,22 @@ public class GraphManager {
                 });
     }
 
-    // Feature: Remove a single node
-    public boolean removeNode(String label) {
-        // Create a new graph
-        MutableGraph newGraph = mutGraph("graph").setDirected(true);
-        boolean nodeFound = false;
-        
-        // Copy all nodes except the one to be removed
-        for (MutableNode node : graph.nodes()) {
-            if (!node.name().toString().equals(label)) {
-                MutableNode newNode = mutNode(node.name().toString());
-                newGraph.add(newNode);
-            } else {
-                nodeFound = true;
+    private boolean shouldKeepNode(String nodeName, String[] nodesToRemove) {
+        for (String label : nodesToRemove) {
+            if (nodeName.equals(label)) {
+                return false;
             }
         }
-        
-        // Copy all edges except those connected to the removed node
-        for (MutableNode node : graph.nodes()) {
-            String nodeName = node.name().toString();
-            if (!nodeName.equals(label)) {
-                for (Link link : node.links()) {
-                    String targetName = link.to().name().toString();
-                    if (!targetName.equals(label)) {
-                        getOrCreateNode(newGraph, nodeName)
-                            .addLink(getOrCreateNode(newGraph, targetName));
-                    }
-                }
-            }
-        }
-        
-        this.graph = newGraph;
-        return nodeFound;
+        return true;
     }
-
-    // Feature: Remove multiple nodes
-    public void removeNodes(String[] labels) {
-        // Create a new graph
+    
+    private MutableGraph createNewGraphWithoutNodes(String[] nodesToRemove) {
         MutableGraph newGraph = mutGraph("graph").setDirected(true);
         
         // Copy all nodes except those to be removed
         for (MutableNode node : graph.nodes()) {
             String nodeName = node.name().toString();
-            boolean shouldKeep = true;
-            for (String label : labels) {
-                if (nodeName.equals(label)) {
-                    shouldKeep = false;
-                    break;
-                }
-            }
-            if (shouldKeep) {
+            if (shouldKeepNode(nodeName, nodesToRemove)) {
                 newGraph.add(mutNode(nodeName));
             }
         }
@@ -188,26 +154,10 @@ public class GraphManager {
         // Copy all edges except those connected to removed nodes
         for (MutableNode node : graph.nodes()) {
             String nodeName = node.name().toString();
-            boolean srcShouldKeep = true;
-            for (String label : labels) {
-                if (nodeName.equals(label)) {
-                    srcShouldKeep = false;
-                    break;
-                }
-            }
-            
-            if (srcShouldKeep) {
+            if (shouldKeepNode(nodeName, nodesToRemove)) {
                 for (Link link : node.links()) {
                     String targetName = link.to().name().toString();
-                    boolean dstShouldKeep = true;
-                    for (String label : labels) {
-                        if (targetName.equals(label)) {
-                            dstShouldKeep = false;
-                            break;
-                        }
-                    }
-                    
-                    if (dstShouldKeep) {
+                    if (shouldKeepNode(targetName, nodesToRemove)) {
                         getOrCreateNode(newGraph, nodeName)
                             .addLink(getOrCreateNode(newGraph, targetName));
                     }
@@ -215,7 +165,22 @@ public class GraphManager {
             }
         }
         
-        this.graph = newGraph;
+        return newGraph;
+    }
+    
+    // Feature: Remove single node
+    public boolean removeNode(String label) {
+        String[] nodesToRemove = {label};
+        boolean nodeExists = graph.nodes().stream()
+                .anyMatch(n -> n.name().toString().equals(label));
+        
+        this.graph = createNewGraphWithoutNodes(nodesToRemove);
+        return nodeExists;
+    }
+    
+    // Feature: Remove multiple nodes
+    public void removeNodes(String[] labels) {
+        this.graph = createNewGraphWithoutNodes(labels);
     }
 
     // Feature: Remove an edge
