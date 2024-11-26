@@ -85,10 +85,15 @@ public class GraphManager {
     public boolean addEdge(String srcLabel, String dstLabel) {
         MutableNode src = getOrCreateNode(srcLabel);
         MutableNode dst = getOrCreateNode(dstLabel);
-
-        if (graph.edges().stream().noneMatch(e ->
-                e.from().name().toString().equals(srcLabel) &&
-                        e.to().name().toString().equals(dstLabel))) {
+    
+        boolean edgeExists = graph.edges().stream()
+            .anyMatch(e -> {
+                boolean sameSource = e.from().name().toString().equals(srcLabel);
+                boolean sameTarget = e.to().name().toString().equals(dstLabel);
+                return sameSource && sameTarget;
+            });
+    
+        if (!edgeExists) {
             src.addLink(dst);
             return true;
         }
