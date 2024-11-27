@@ -225,7 +225,11 @@ public class GraphManager {
     }
 
     public GraphPath searchPath(String srcLabel, String dstLabel, Algorithm algo) {
-        GraphPathFinder pathFinder = new GraphPathFinder(graph);
-        return pathFinder.findPath(srcLabel, dstLabel, algo);
+        GraphSearchTemplate searchStrategy = switch (algo) {
+            case BFS -> new BFSSearch(graph);
+            case DFS -> new DFSSearch(graph);
+        };
+        
+        return searchStrategy.findPath(srcLabel, dstLabel);
     }
 }
