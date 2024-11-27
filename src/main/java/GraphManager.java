@@ -7,6 +7,8 @@ import guru.nidi.graphviz.parse.Parser;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static guru.nidi.graphviz.model.Factory.mutGraph;
@@ -14,9 +16,13 @@ import static guru.nidi.graphviz.model.Factory.mutNode;
 
 public class GraphManager {
     private MutableGraph graph;
+    private final Map<Algorithm, SearchStrategy> searchStrategies;
 
     public GraphManager() {
         this.graph = mutGraph("graph").setDirected(true);
+        this.searchStrategies = new EnumMap<>(Algorithm.class);
+        searchStrategies.put(Algorithm.BFS, new BFSSearchStrategy());
+        searchStrategies.put(Algorithm.DFS, new DFSSearchStrategy());
     }
 
     // Feature 1: Parse a DOT graph file to create a graph
@@ -225,11 +231,11 @@ public class GraphManager {
     }
 
     public GraphPath searchPath(String srcLabel, String dstLabel, Algorithm algo) {
-        GraphSearchAlgorithm searchAlgorithm = switch (algo) {
-            case BFS -> new BFSTemplate(graph);
-            case DFS -> new DFSTemplate(graph);
-        };
+        if (algo == null) {
+            throw new IllegalArgumentException("Algorithm cannot be null");
+        }
         
-        return searchAlgorithm.findPath(srcLabel, dstLabel);
+        SearchStrategy strategy = searchStrategies.get(algo);
+        return strategy.findPath(graph, srcLabel, dstLabel);
     }
 }
