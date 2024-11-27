@@ -23,6 +23,7 @@ public class GraphManager {
         this.searchStrategies = new EnumMap<>(Algorithm.class);
         searchStrategies.put(Algorithm.BFS, new BFSSearchStrategy());
         searchStrategies.put(Algorithm.DFS, new DFSSearchStrategy());
+        searchStrategies.put(Algorithm.RANDOM_WALK, new RandomWalkSearchStrategy());  // Add this line
     }
 
     // Feature 1: Parse a DOT graph file to create a graph

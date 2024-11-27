@@ -25,6 +25,7 @@ public class GraphPathFinder {
         return switch (algo) {
             case BFS -> bfsSearch(src, srcLabel, dstLabel);
             case DFS -> dfsSearch(src, srcLabel, dstLabel);
+            case RANDOM_WALK -> randomWalkSearch(src, srcLabel, dstLabel);  // Add this case
         };
     }
 
@@ -117,5 +118,51 @@ public class GraphPathFinder {
             finalPath.addNode(nodes.get(i));
         }
         return finalPath;
+    }
+
+    private GraphPath randomWalkSearch(MutableNode src, String srcLabel, String dstLabel) {
+        Random random = new Random();
+        Map<String, String> parentMap = new HashMap<>();
+        GraphPath currentPath = new GraphPath();
+        int MAX_STEPS = 1000;
+        
+        MutableNode current = src;
+        currentPath.addNode(srcLabel);
+        System.out.println("random testing");
+        System.out.println("visiting " + currentPath);
+    
+        int steps = 0;
+        while (steps < MAX_STEPS) {
+            String currentLabel = current.name().toString();
+            
+            if (currentLabel.equals(dstLabel)) {
+                return currentPath;
+            }
+            
+            List<MutableNode> neighbors = new ArrayList<>();
+            for (Link link : current.links()) {
+                String neighborLabel = link.to().name().toString();
+                MutableNode neighbor = findNode(neighborLabel);
+                if (neighbor != null) {
+                    neighbors.add(neighbor);
+                }
+            }
+            
+            if (neighbors.isEmpty()) {
+                return null;
+            }
+            
+            MutableNode next = neighbors.get(random.nextInt(neighbors.size()));
+            String nextLabel = next.name().toString();
+            
+            parentMap.put(nextLabel, currentLabel);
+            currentPath.addNode(nextLabel);
+            System.out.println("visiting " + currentPath);
+            
+            current = next;
+            steps++;
+        }
+        
+        return null;
     }
 }
