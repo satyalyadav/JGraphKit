@@ -225,11 +225,11 @@ public class GraphManager {
     }
 
     public GraphPath searchPath(String srcLabel, String dstLabel, Algorithm algo) {
-        GraphSearchTemplate searchStrategy = switch (algo) {
-            case BFS -> new BFSSearch(graph);
-            case DFS -> new DFSSearch(graph);
+        GraphSearchAlgorithm searchAlgorithm = switch (algo) {
+            case BFS -> new BFSTemplate(graph);
+            case DFS -> new DFSTemplate(graph);
         };
         
-        return searchStrategy.findPath(srcLabel, dstLabel);
+        return searchAlgorithm.findPath(srcLabel, dstLabel);
     }
 }
