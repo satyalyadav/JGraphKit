@@ -191,6 +191,79 @@ BFS Path A->C: A -> B -> C
 DFS Path A->C: A -> B -> C
 ```
 
+
+## New Features in Part 3
+
+### 7. Code Refactoring
+
+Five main refactoring changes were implemented to improve code quality:
+
+1. Extract File Operations:
+   - Extracted file I/O operations into dedicated class
+   - Improved separation of concerns
+
+2. Extract Path Finding Logic:
+   - Moved search algorithms to separate classes
+   - Enhanced modularity and testability
+
+3. Consolidate Node Removal:
+   - Combined duplicate removal code
+   - Reduced code duplication
+
+4. Variable Extraction:
+   - Improved readability in addEdge method
+   - Enhanced code clarity
+
+5. Method Renaming:
+   - Updated method names to follow conventions
+   - Improved code consistency
+
+### 8. Template Pattern Implementation
+
+The template pattern was implemented to standardize graph search algorithms:
+
+```java
+// Using template pattern for graph search
+GraphSearchTemplate bfsSearch = new BFSSearch(graph);
+GraphSearchTemplate dfsSearch = new DFSSearch(graph);
+```
+
+### 9. Strategy Pattern Implementation
+
+Strategy pattern allows runtime algorithm selection:
+
+```java
+// Using strategy pattern for algorithm selection
+GraphSearchStrategy strategy = SearchStrategyFactory.getStrategy(Algorithm.BFS);
+GraphPath path = strategy.findPath(graph, "A", "B");
+```
+
+### 10. Random Walk Search
+
+New random walk implementation using both patterns:
+
+```java
+// Using random walk search
+GraphPath randomPath = manager.GraphSearch("A", "C", Algorithm.RANDOM_WALK);
+```
+
+Random Walk Output:
+```
+random testing
+visiting Path{nodes=[Node{a}]}
+visiting Path{nodes=[Node{a}, Node{b}]} 
+visiting Path{nodes=[Node{a}, Node{b}, Node{c}]}
+Path{nodes=[Node{a}, Node{b}, Node{c}]}
+
+random testing
+visiting Path{nodes=[Node{a}]}
+visiting Path{nodes=[Node{a}, Node{e}]} 
+visiting Path{nodes=[Node{a}, Node{e}, Node{f}]} 
+visiting Path{nodes=[Node{a}, Node{b}]} 
+visiting Path{nodes=[Node{a}, Node{b}, Node{c}]}
+Path{nodes=[Node{a}, Node{b}, Node{c}]}
+```
+
 ## Continuous Integration
 
 This project uses GitHub Actions for continuous integration. Every push to the repository automatically:
@@ -198,7 +271,7 @@ This project uses GitHub Actions for continuous integration. Every push to the r
 - Runs all tests
 - Reports test results
 
-![Output Graph](actions.png)
+![CI/CD Workflow](actions.png)
 
 ## Running Tests
 
@@ -223,10 +296,30 @@ mvn test
 - DFS Implementation: [3c43d5a](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/3c43d5aaafd74f92448263093ca1bd7e44047e8a)
 - Algorithm Selection: [a3e4f7c](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/a3e4f7cbc13ea547d62d1e3796486668c70c5fd1)
 
+### Part 3 Features
+- Code Refactoring
+  - Extract File Operations: [6997db1](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/6997db1be8f62e5acc46a67aeb27c37920285e4f)
+  - Extract Path Finding Logic: [e16b967](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/e16b96760cc59e5ef051b6b08a8ac018b6bd75c5)
+  - Consolidate Node Removal: [3d8d723](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/3d8d72337d6e60f08808339d81af272ddb8b49a8)
+  - Variable Extraction: [3b9b73d](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/3b9b73d6d2e8bf84411ac70c9858ddfc2aff8626)
+  - Method Renaming: [b086ddb](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/b086ddba2b8b6f61cb1d47f536a114cd02554d4d)
+- Template Pattern Implementation
+  - Base Template: [a297e92](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/a297e922c4ed7ef5dd7729710196503e9413bf20)
+  - Template Refinements: [15d4e1e](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/15d4e1ee17e87969d8416a0fdbdf9cbf46ee52db)
+- Strategy Pattern Implementation: [9afa0ad](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/9afa0ad07a95396b3b09de7bf948c86fa96db85b)
+- Random Walk Search: [a64a1a0](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/a64a1a0bac2ea2309dad075d891f2aebab9543b1)
+
+### Pull Request
+
+Part 3 Pull Request: [Pull Request #1](https://github.com/satyalyadav/CSE-464-2024-syadav42/pull/1)
+
 ### Branches
+- Main: [main](https://github.com/satyalyadav/CSE-464-2024-syadav42/tree/main)
 - BFS Branch: [bfs](https://github.com/satyalyadav/CSE-464-2024-syadav42/tree/bfs)
 - DFS Branch: [dfs](https://github.com/satyalyadav/CSE-464-2024-syadav42/tree/dfs)
+- Refactor: [refactor](https://github.com/satyalyadav/CSE-464-2024-syadav42/tree/refactor)
 
 ### Merges
 - BFS Merge: [bf55837](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/bf55837be34316b4ff6b29d5a5c9a9d696309fd5)
 - DFS Merge with Algorithm Selection: [a3e4f7c](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/a3e4f7cbc13ea547d62d1e3796486668c70c5fd1)
+- Refactor Merge: [fcbe375](https://github.com/satyalyadav/CSE-464-2024-syadav42/commit/fcbe3753dac952760644170cddb34fc153ec637d)
