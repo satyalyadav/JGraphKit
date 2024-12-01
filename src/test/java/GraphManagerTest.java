@@ -184,36 +184,36 @@ public class GraphManagerTest {
     }
 
     @Test
-    void testGraphSearchBFS() {
+    void testSearchPathBFS() {
         setupTestGraph();
         
         // Test direct path with BFS
-        GraphPath path1 = graphManager.GraphSearch("A", "D", Algorithm.BFS);
+        GraphPath path1 = graphManager.searchPath("A", "D", Algorithm.BFS);
         assertNotNull(path1, "Should find a path from A to D");
         assertEquals("A -> D", path1.toString(), "BFS should find direct path from A to D");
 
         // Test longer path
-        GraphPath path2 = graphManager.GraphSearch("A", "C", Algorithm.BFS);
+        GraphPath path2 = graphManager.searchPath("A", "C", Algorithm.BFS);
         assertNotNull(path2, "Should find a path from A to C");
         assertEquals("A -> B -> C", path2.toString(), "BFS should find shortest path through B");
 
         // Test no path exists
         graphManager.addNode("E"); // Isolated node
-        GraphPath path3 = graphManager.GraphSearch("A", "E", Algorithm.BFS);
+        GraphPath path3 = graphManager.searchPath("A", "E", Algorithm.BFS);
         assertNull(path3, "Should return null when no path exists");
 
         // Test path to self
-        GraphPath path4 = graphManager.GraphSearch("A", "A", Algorithm.BFS);
+        GraphPath path4 = graphManager.searchPath("A", "A", Algorithm.BFS);
         assertNotNull(path4, "Should find a path from A to A");
         assertEquals("A", path4.toString(), "Path to self should only contain the node itself");
     }
 
     @Test
-    void testGraphSearchDFS() {
+    void testSearchPathDFS() {
         setupTestGraph();
         
         // Test finding a path with DFS
-        GraphPath path1 = graphManager.GraphSearch("A", "D", Algorithm.DFS);
+        GraphPath path1 = graphManager.searchPath("A", "D", Algorithm.DFS);
         assertNotNull(path1, "Should find a path from A to D");
         assertTrue(
             path1.toString().equals("A -> D") || // Direct path
@@ -222,18 +222,18 @@ public class GraphManagerTest {
         );
 
         // Test path to self
-        GraphPath path2 = graphManager.GraphSearch("A", "A", Algorithm.DFS);
+        GraphPath path2 = graphManager.searchPath("A", "A", Algorithm.DFS);
         assertNotNull(path2, "Should find a path from A to A");
         assertEquals("A", path2.toString(), "Path to self should only contain the node itself");
 
         // Test with no path available
         graphManager.addNode("E"); // Isolated node
-        GraphPath path3 = graphManager.GraphSearch("A", "E", Algorithm.DFS);
+        GraphPath path3 = graphManager.searchPath("A", "E", Algorithm.DFS);
         assertNull(path3, "Should return null when no path exists");
     }
 
     @Test
-    void testGraphSearchCyclic() {
+    void testSearchPathCyclic() {
         // Create a cyclic graph
         graphManager.addNode("A");
         graphManager.addNode("B");
@@ -243,13 +243,13 @@ public class GraphManagerTest {
         graphManager.addEdge("C", "A");
 
         // Test both algorithms can handle cycles
-        GraphPath bfsPath = graphManager.GraphSearch("A", "C", Algorithm.BFS);
+        GraphPath bfsPath = graphManager.searchPath("A", "C", Algorithm.BFS);
         assertNotNull(bfsPath, "BFS should find a path in cyclic graph");
         assertTrue(bfsPath.getNodes().get(0).equals("A") && 
                   bfsPath.getNodes().get(bfsPath.getNodes().size() - 1).equals("C"),
                 "BFS path should start at source and end at destination");
 
-        GraphPath dfsPath = graphManager.GraphSearch("A", "C", Algorithm.DFS);
+        GraphPath dfsPath = graphManager.searchPath("A", "C", Algorithm.DFS);
         assertNotNull(dfsPath, "DFS should find a path in cyclic graph");
         assertTrue(dfsPath.getNodes().get(0).equals("A") && 
                   dfsPath.getNodes().get(dfsPath.getNodes().size() - 1).equals("C"),
@@ -257,19 +257,19 @@ public class GraphManagerTest {
     }
 
     @Test
-    void testGraphSearchInvalidInputs() {
+    void testSearchPathInvalidInputs() {
         graphManager.addNode("A");
         
         assertThrows(IllegalArgumentException.class, () -> {
-            graphManager.GraphSearch("A", "NonExistent", Algorithm.BFS);
+            graphManager.searchPath("A", "NonExistent", Algorithm.BFS);
         }, "Should throw exception for non-existent destination with BFS");
         
         assertThrows(IllegalArgumentException.class, () -> {
-            graphManager.GraphSearch("NonExistent", "A", Algorithm.DFS);
+            graphManager.searchPath("NonExistent", "A", Algorithm.DFS);
         }, "Should throw exception for non-existent source with DFS");
 
         assertThrows(IllegalArgumentException.class, () -> {
-            graphManager.GraphSearch("A", "A", null);
+            graphManager.searchPath("A", "A", null);
         }, "Should throw exception for null algorithm");
     }
 
